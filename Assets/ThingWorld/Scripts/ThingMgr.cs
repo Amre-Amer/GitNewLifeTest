@@ -8,11 +8,27 @@ public class ThingMgr : MonoBehaviour
     float radiusMin = 2;
     float radiusMax = 3;
 
+    public int nTarget;
+    float distMove = .1f;
+    float distNear = 1f;
+
     void Start()
     {
-        InvokeRepeating(nameof(UpdatePose), 0, duration);
+        // InvokeRepeating(nameof(UpdatePose), 0, duration);
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    void Update()
+    {
+        if (nTarget < 0) return;
+        Vector3 pos = mgr.things[nTarget].transform.position;
+        transform.LookAt(pos);     
+        float dist = Vector3.Distance(transform.position, pos);
+        if (dist > distNear)
+        {
+            transform.Translate(0, 0, distMove);   
+        }
+    }
+
     public void UpdatePose()
     {
         Pose startPose = new Pose(transform.position, transform.rotation);
@@ -23,6 +39,12 @@ public class ThingMgr : MonoBehaviour
         StartCoroutine(LerpPoseRoutine(startPose, endPose, duration));
 
         mgr.toolsMgr.UpdateColor(this);
+    }
+
+    public void StartPose()
+    {
+        Pose pos = GetRandomPose();
+        transform.SetPositionAndRotation(pos.position, pos.rotation);
     }
 
     Pose GetRandomPose()

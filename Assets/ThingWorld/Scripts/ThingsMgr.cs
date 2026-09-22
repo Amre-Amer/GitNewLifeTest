@@ -6,7 +6,7 @@ public class ThingsMgr : MonoBehaviour
     public ToolsMgr toolsMgr;
     public int numThings = 5;
     public GameObject prefabThing;
-    List<ThingMgr>things = new();
+    public List<ThingMgr>things = new();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,8 +26,11 @@ public class ThingsMgr : MonoBehaviour
         for(int n = 0; n < numThings; n++)
         {
             ThingMgr thing = CreateThing();
+            thing.name = "thing " + n;
             thing.mgr = this;
-            thing.UpdatePose();
+            thing.StartPose();
+            thing.nTarget = n - 1;
+            toolsMgr.UpdateColor(thing);
             things.Add(thing);
         }
     }
