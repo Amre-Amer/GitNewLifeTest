@@ -1,18 +1,16 @@
 using UnityEngine;
 
-public class Test : MonoBehaviour
+public class ThingMgr : MonoBehaviour
 {
-    public GameObject thing;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("test...");
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        thing.transform.Rotate(1, 1, 1);        
+        
     }
 }
