@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ThingsMgr : MonoBehaviour
 {
+    public ToolsMgr toolsMgr;
     public int numThings = 5;
     public GameObject prefabThing;
     List<ThingMgr>things = new();
@@ -11,27 +11,13 @@ public class ThingsMgr : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        toolsMgr = GetComponent<ToolsMgr>();
         CreateThings();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    Pose GetStartPose()
-    {
-        Vector3 pos = UnityEngine.Random.insideUnitSphere;
-        Quaternion rot = Quaternion.Euler(pos * 360);
-        Pose pose = new Pose(pos, rot);
-        return pose;
-    }
     ThingMgr CreateThing()
     {
         ThingMgr thing = Instantiate(prefabThing, transform).GetComponent<ThingMgr>();
-        Pose pose = GetStartPose();
-        thing.transform.SetPositionAndRotation(pose.position, pose.rotation);
         return thing;
     }
 
@@ -40,6 +26,8 @@ public class ThingsMgr : MonoBehaviour
         for(int n = 0; n < numThings; n++)
         {
             ThingMgr thing = CreateThing();
+            thing.mgr = this;
+            thing.UpdatePose();
             things.Add(thing);
         }
     }
