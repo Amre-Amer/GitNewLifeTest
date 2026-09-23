@@ -6,13 +6,19 @@ public class ThingMgr : MonoBehaviour
     public ThingsMgr mgr;
 
     public int nTarget;
-    public float distMove = .1f;
-    float distNear = 1f;
+    public float distMove;
+    float distNear;
 
-    public void InitThing(ThingsMgr mgr0, int n)
+    void Awake()
+    {
+        distMove = .1f;
+        distNear = 1f;
+    }
+
+    public void InitThing(ThingsMgr mgrNew, int n)
     {
         name = "thing " + n;
-        mgr = mgr0;
+        mgr = mgrNew;
         StartPose();
         nTarget = n - 1;
         mgr.toolsMgr.UpdateColor(this);

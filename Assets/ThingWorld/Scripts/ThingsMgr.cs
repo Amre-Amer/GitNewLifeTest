@@ -1,26 +1,44 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ThingsMgr : MonoBehaviour
 {
-    public ToolsMgr toolsMgr;
-    public int numThings = 5;
+    [HideInInspector] public ToolsMgr toolsMgr;
+    [HideInInspector] public HistoryMgr historyMgr;
+    public int numThings;
     public GameObject prefabThing;
     public List<ThingMgr>things = new();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Awake()
+    {
+        numThings = 5;
+    }
+
     void Start()
     {
         toolsMgr = GetComponent<ToolsMgr>();
+        historyMgr = GetComponent<HistoryMgr>();
         CreateThings();
-        InvokeRepeating(nameof(UpdateThing0), 1, 1);
+        InvokeRepeating(nameof(UpdateThing), 1, .1f);
     }
 
-    void UpdateThing0()
+    void UpdateThing()
     {
         ThingMgr thing = things[0];
-        Pose pos = toolsMgr.GetRandomPose();
-        thing.transform.SetPositionAndRotation(pos.position, pos.rotation);
+        Pose pose = toolsMgr.GetRandomPoseNear(thing);
+        thing.transform.SetPositionAndRotation(pose.position, pose.rotation);
+        if (historyMgr.lineSegPoints.Count == 0)
+        {
+            historyMgr.AddLineSegPoint(pose.position);
+        } else
+        {
+            float dist = Vector3.Distance(historyMgr.lineSegPoints.Last(), pose.position);
+            if (dist >= historyMgr.distMin)
+            {
+                historyMgr.AddLineSegPoint(pose.position);
+            }
+        }
     }
 
     ThingMgr CreateThing()
