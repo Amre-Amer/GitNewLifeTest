@@ -13,6 +13,14 @@ public class ThingsMgr : MonoBehaviour
     {
         toolsMgr = GetComponent<ToolsMgr>();
         CreateThings();
+        InvokeRepeating(nameof(UpdateThing0), 1, 1);
+    }
+
+    void UpdateThing0()
+    {
+        ThingMgr thing = things[0];
+        Pose pos = toolsMgr.GetRandomPose();
+        thing.transform.SetPositionAndRotation(pos.position, pos.rotation);
     }
 
     ThingMgr CreateThing()
@@ -26,11 +34,7 @@ public class ThingsMgr : MonoBehaviour
         for(int n = 0; n < numThings; n++)
         {
             ThingMgr thing = CreateThing();
-            thing.name = "thing " + n;
-            thing.mgr = this;
-            thing.StartPose();
-            thing.nTarget = n - 1;
-            toolsMgr.UpdateColor(thing);
+            thing.InitThing(this, n);
             things.Add(thing);
         }
     }
