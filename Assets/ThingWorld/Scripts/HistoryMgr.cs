@@ -4,21 +4,13 @@ using UnityEngine;
 
 public class HistoryMgr : MonoBehaviour
 {
-    ThingsMgr mgr;
+    public ThingsMgr mgr;
     public GameObject prefabLineSeg;
-    List<GameObject>lineSegs = new();
-    [HideInInspector] public List<Vector3>lineSegPoints = new();
-    int maxLineSegs;
+    [HideInInspector] public List<GameObject>lineSegs = new();
     GameObject parentLineSegs;
-    float widthLineSeg;
-    [HideInInspector] public float distMin;
 
     void Awake()
     {
-        maxLineSegs = 100;
-        distMin = .001f;
-        widthLineSeg = .02f;
-        mgr = GetComponent<ThingsMgr>();
         CreateParentLineSegs();
     }
 
@@ -28,31 +20,49 @@ public class HistoryMgr : MonoBehaviour
         parentLineSegs.transform.SetParent(transform);
     }
 
-    GameObject CreateLineSeg(Vector3 posFrom, Vector3 posTo)
+    GameObject CreateLineSeg()
     {
-        float dist = Vector3.Distance(posFrom, posTo);
         GameObject lineSeg = Instantiate(prefabLineSeg, parentLineSegs.transform);
-        lineSeg.transform.position = (posFrom + posTo) / 2;
-        lineSeg.transform.LookAt(posTo);
-        lineSeg.transform.localScale = new (widthLineSeg, widthLineSeg, dist);
         return lineSeg;
     }
 
-    public void AddLineSegPoint(Vector3 pos)
+    void UpdateLineSeg(GameObject lineSeg, Vector3 posFrom, Vector3 posTo)
     {
-        if (lineSegs.Count > maxLineSegs) {
-            Debug.Log("max reached " + maxLineSegs);
-            return;
-        }
-        // first lineSeg is null
-        lineSegPoints.Add(pos);
-        GameObject lineSeg = null;
-        if (lineSegPoints.Count > 1)
+        float dist = Vector3.Distance(posFrom, posTo);
+        lineSeg.transform.position = posFrom;
+        lineSeg.transform.LookAt(posTo);
+        lineSeg.transform.localScale = new (mgr.g.widthLineSeg, mgr.g.widthLineSeg, dist);
+    }
+
+    public void AddLineSeg(Vector3 pos)
+    {
+        if (lineSegs.Count == mgr.g.maxLineSegs) {
+            ScrollLineSegPoints();
+        } else
         {
-            Vector3 posLast = lineSegPoints[lineSegPoints.Count - 2];
-            lineSeg = CreateLineSeg(posLast, pos); 
+            GameObject lineSeg = CreateLineSeg(); 
+            lineSegs.Add(lineSeg);
         }
-        lineSegs.Add(lineSeg);
+        lineSegs.Last().transform.position = pos;
+        UpdateLineSeg(lineSegs.Last(), pos, pos);
+        if (lineSegs.Count > 1)
+        {
+            int nLast = lineSegs.Count - 1;
+            int nLastLast = nLast - 1;
+            GameObject lineSegLastLast = lineSegs[nLastLast];
+            Vector3 posLastLast = lineSegLastLast.transform.position;
+            UpdateLineSeg(lineSegLastLast, posLastLast, pos);
+        }
         parentLineSegs.name = "parentLineSegs " + parentLineSegs.transform.childCount;
     }
+ 
+    void ScrollLineSegPoints()
+    {
+        for(int n = 0; n < lineSegs.Count - 1; n++)
+        {            
+            GameObject lineSeg0 = lineSegs[n];
+            GameObject lineSeg1 = lineSegs[n + 1]; 
+            lineSeg0.transform.SetPositionAndRotation(lineSeg1.transform.position, lineSeg1.transform.rotation);
+        }
+     }
 }

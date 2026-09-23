@@ -4,23 +4,16 @@ using System.Linq;
 
 public class ThingsMgr : MonoBehaviour
 {
-    [HideInInspector] public ToolsMgr toolsMgr;
-    [HideInInspector] public HistoryMgr historyMgr;
-    public int numThings;
+    public GlobalsMgr g;
+    public ToolsMgr toolsMgr;
+    public HistoryMgr historyMgr;
     public GameObject prefabThing;
     public List<ThingMgr>things = new();
 
-    void Awake()
-    {
-        numThings = 5;
-    }
-
     void Start()
     {
-        toolsMgr = GetComponent<ToolsMgr>();
-        historyMgr = GetComponent<HistoryMgr>();
         CreateThings();
-        InvokeRepeating(nameof(UpdateThing), 1, .1f);
+        InvokeRepeating(nameof(UpdateThing), 1, g.interval);
     }
 
     void UpdateThing()
@@ -28,15 +21,15 @@ public class ThingsMgr : MonoBehaviour
         ThingMgr thing = things[0];
         Pose pose = toolsMgr.GetRandomPoseNear(thing);
         thing.transform.SetPositionAndRotation(pose.position, pose.rotation);
-        if (historyMgr.lineSegPoints.Count == 0)
+        if (historyMgr.lineSegs.Count == 0)
         {
-            historyMgr.AddLineSegPoint(pose.position);
+            historyMgr.AddLineSeg(pose.position);
         } else
         {
-            float dist = Vector3.Distance(historyMgr.lineSegPoints.Last(), pose.position);
-            if (dist >= historyMgr.distMin)
+            float dist = Vector3.Distance(historyMgr.lineSegs.Last().transform.position, pose.position);
+            if (dist >= g.distMin)
             {
-                historyMgr.AddLineSegPoint(pose.position);
+                historyMgr.AddLineSeg(pose.position);
             }
         }
     }
@@ -49,7 +42,7 @@ public class ThingsMgr : MonoBehaviour
 
     void CreateThings()
     {
-        for(int n = 0; n < numThings; n++)
+        for(int n = 0; n < g.numThings; n++)
         {
             ThingMgr thing = CreateThing();
             thing.InitThing(this, n);

@@ -395,6 +395,7 @@ GameObject:
   - component: {fileID: 532129740}
   - component: {fileID: 532129742}
   - component: {fileID: 532129743}
+  - component: {fileID: 532129744}
   m_Layer: 0
   m_Name: Things
   m_TagString: Untagged
@@ -414,9 +415,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08bfdd12bbd6b0438a838c75e463ff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThingsMgr
-  toolsMgr: {fileID: 0}
-  historyMgr: {fileID: 0}
-  numThings: 5
+  g: {fileID: 532129744}
+  toolsMgr: {fileID: 532129742}
+  historyMgr: {fileID: 532129743}
   prefabThing: {fileID: 8737327889416368338, guid: 087d2daadbe19ab449dbf867dcded3d2, type: 3}
   things: []
 --- !u!4 &532129741
@@ -446,6 +447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ec4314da2c6158498bb31f6cc718ef0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToolsMgr
+  mgr: {fileID: 532129740}
 --- !u!114 &532129743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,7 +460,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4315249ba3be54997ecd5f744ec275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HistoryMgr
+  mgr: {fileID: 532129740}
   prefabLineSeg: {fileID: 5893564819715354151, guid: 010e6e0faad72fb409c9b057f0f0f481, type: 3}
+  lineSegPoints: []
+--- !u!114 &532129744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532129739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc5d15de556c2c468dc671f46fae24b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GlobalsMgr
+  numThings: 0
+  interval: 0
+  radiusGlobal: 0
+  radiusNear: 0
+  maxLineSegs: 0
+  widthLineSeg: 0
+  distMin: 0
+  distMove: 0
+  distNear: 0
 --- !u!1 &547306570
 GameObject:
   m_ObjectHideFlags: 0
