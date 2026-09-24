@@ -29,6 +29,7 @@ public class HistoryMgr : MonoBehaviour
     void UpdateLineSeg(GameObject lineSeg, Vector3 posFrom, Vector3 posTo)
     {
         float dist = Vector3.Distance(posFrom, posTo);
+        if (dist == 0) dist = mgr.g.widthLineSeg;
         lineSeg.transform.position = posFrom;
         lineSeg.transform.LookAt(posTo);
         lineSeg.transform.localScale = new (mgr.g.widthLineSeg, mgr.g.widthLineSeg, dist);
@@ -37,7 +38,7 @@ public class HistoryMgr : MonoBehaviour
     public void AddLineSeg(Vector3 pos)
     {
         if (lineSegs.Count == mgr.g.maxLineSegs) {
-            ScrollLineSegPoints();
+            ScrollLineSegs();
         } else
         {
             GameObject lineSeg = CreateLineSeg(); 
@@ -56,7 +57,7 @@ public class HistoryMgr : MonoBehaviour
         parentLineSegs.name = "parentLineSegs " + parentLineSegs.transform.childCount;
     }
  
-    void ScrollLineSegPoints()
+    void ScrollLineSegs()
     {
         for(int n = 0; n < lineSegs.Count - 1; n++)
         {            
@@ -65,4 +66,15 @@ public class HistoryMgr : MonoBehaviour
             lineSeg0.transform.SetPositionAndRotation(lineSeg1.transform.position, lineSeg1.transform.rotation);
         }
      }
+
+     public float GetLength()
+    {
+        float length = 0;
+        foreach (GameObject lineSeg in lineSegs)
+        {
+            float dist = lineSeg.transform.localScale.z;
+            length += dist;
+        }
+        return length;
+    }
 }
